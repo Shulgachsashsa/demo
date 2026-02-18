@@ -4,13 +4,13 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/popytka_by
-    username: user
+    username: postgres
     password: 150798710
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -19,14 +19,4 @@ spring:
 
   token:
     signing:
-      FQO13F1FQW94F2FJ10DW813FH13IFD1J38FH13DIQWL190R4HFQO3DFH3F73719FHA9W7
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
-
-  logging:
-     level:
-       liquibase: DEBUG
-       org.springframework.jdbc: DEBUG
-       org.springframework.boot.autoconfigure.liquibase: DEBUG
+      key: FQO13F1FQW94F2FJ10DW813FH13IFD1J38FH13DIQWL190R4HFQO3DFH3F73719FHA9W7

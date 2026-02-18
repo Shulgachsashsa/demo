@@ -1,4 +1,4 @@
-package entity.enums;
+package org.example.demo.entity.enums;
 
 public enum Role {
     ROLE_USER,
