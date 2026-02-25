@@ -4,14 +4,14 @@ spring:
 
   datasource:
     url: jdbc:postgresql://localhost:5432/popytka_by
-    username: postgres
-    password: 150798710
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -19,4 +19,50 @@ spring:
 
   token:
     signing:
-      key: FQO13F1FQW94F2FJ10DW813FH13IFD1J38FH13DIQWL190R4HFQO3DFH3F73719FHA9W7
+      key: ${SECRET_KEY}
+      ttl: ${TTL_KEY}
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  cache:
+    redis:
+      key-prefix: ${KEY_PREFIX}
+      time-to-live: ${TTL_MINUTES}
+      max-attempts: ${MAX_ATTEMPTS}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+              - openid
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+server:
+  port: 8080
+  address: localhost

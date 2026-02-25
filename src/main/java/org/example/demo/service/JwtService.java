@@ -20,7 +20,10 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value("${spring.token.signing.key}")
-    private String jwtSigningKey;
+    private String JWT_SIGN_IN_KEY;
+
+    @Value("${spring.token.signing.ttl}")
+    private int TTL_KEY;
 
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -52,7 +55,7 @@ public class JwtService {
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 100000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * TTL_KEY)) // minutes
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
     }
 
@@ -74,7 +77,7 @@ public class JwtService {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtSigningKey);
+        byte[] keyBytes = Decoders.BASE64.decode(JWT_SIGN_IN_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

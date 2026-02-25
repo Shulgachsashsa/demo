@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +36,14 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @Column(name="enabled", nullable = false)
+    private boolean enabled;
+
+    @Column(unique = true)
+    private String googleId;
+
+    private String provider;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
