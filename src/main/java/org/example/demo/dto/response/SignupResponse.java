@@ -20,6 +20,4 @@ public class SignupResponse {
     @Email(message = "Email must be in format example@gmail.com")
     private String email;
 
-    @Schema(description = "Time life code")
-    private Integer expiresInMinutes;
 }

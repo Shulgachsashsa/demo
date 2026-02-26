@@ -11,35 +11,23 @@ import org.example.demo.entity.enums.Role;
 import org.example.demo.exceptions.*;
 import org.example.demo.modelsRedis.RegistrationData;
 import org.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class RegistrationService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
     private final UserService userService;
     private final MailSenderService mailSenderService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final MailCodeService mailCodeService;
     private final UserRepository userRepository;
-
-    @Value("${spring.cache.redis.key-prefix}")
-    private String KEY_PREFIX;
-
-    @Value("${spring.cache.redis.time-to-live}")
-    private long TTL_MINUTES;
-
-    @Value("${spring.cache.redis.max-attempts}")
-    private int MAX_ATTEMPTS;
+    private final RedisAuthService redisAuthService;
 
     public SignupResponse signup(SignupRequest request) {
         log.info("Initiating registration for email: {}", request.getEmail());
@@ -47,12 +35,11 @@ public class RegistrationService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserWithEmailAlreadyExistsException(request.getEmail());
         }
-
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new UserWithUsernameAlreadyExistsException(request.getUsername());
         }
 
-        String code = mailCodeService.generateCode(request.getEmail());
+        String code = mailCodeService.generateCode();
         log.debug("Generated code for {}: {}", request.getEmail(), code);
 
         RegistrationData registrationData = new RegistrationData(
@@ -62,8 +49,7 @@ public class RegistrationService {
                 code
         );
 
-        String key = KEY_PREFIX + request.getEmail();
-        redisTemplate.opsForValue().set(key, registrationData, TTL_MINUTES, TimeUnit.MINUTES);
+        redisAuthService.addInitiateRegistrationData(request.getEmail(), registrationData);
 
         CompletableFuture.runAsync(() -> {
             try {
@@ -74,30 +60,26 @@ public class RegistrationService {
             }
         });
 
-        return new SignupResponse(
-                "Verification code sent to your email",
-                request.getEmail(),
-                (int) TTL_MINUTES);
+        return new SignupResponse("Verification code sent to your email", request.getEmail());
     }
 
     public JwtAuthenticationResponse verifyAndComplete(VerifySignupRequest request) {
         log.info("Complete registration for email: {}", request.getEmail());
 
-        String key = KEY_PREFIX + request.getEmail();
-        RegistrationData data = (RegistrationData) redisTemplate.opsForValue().get(key);
+        RegistrationData data = redisAuthService.getRegistrationData(request.getEmail());
+
         if (data == null)
             throw new RegistrationExpiredOrNotFoundException("Registration expired or not found. Please start over.");
 
-        if (data.getAttempts() >= MAX_ATTEMPTS) {
-            redisTemplate.delete(key);
+        if (redisAuthService.checkMaxAttempts(data)) {
+            redisAuthService.deleteRegistrationData(request.getEmail());
             throw new TooManyFailedAttemptsExceptions("Too many failed attempts. Please start over.");
         }
 
-        if (!data.getVerificationCode().equals(request.getCode())) {
-            data.setAttempts(data.getAttempts() + 1);
-            redisTemplate.opsForValue().set(key, data, TTL_MINUTES, TimeUnit.MINUTES);
-            int attemptsLeft = MAX_ATTEMPTS - data.getAttempts();
-            throw new InvalidCodeException("Invalid code. Attempts left: " + attemptsLeft);
+        if (!redisAuthService.equalsCode(request.getCode(), request.getEmail())) {
+            redisAuthService.addAttempts(request.getEmail());
+            throw new InvalidCodeException("Invalid code. Attempts left: " +
+                    redisAuthService.getMaxAttempts(request.getEmail()));
         }
 
         User user = User.builder()
@@ -110,7 +92,7 @@ public class RegistrationService {
 
         userService.create(user);
         log.info("User created successfully: {}", user.getEmail());
-        redisTemplate.delete(key);
+        redisAuthService.deleteRegistrationData(request.getEmail());
 
         return new JwtAuthenticationResponse(jwtService.generateToken(user));
     }
@@ -118,16 +100,17 @@ public class RegistrationService {
     public void resendCode(String email) {
         log.info("Resending code for email: {}", email);
 
-        String key = KEY_PREFIX + email;
-        RegistrationData data = (RegistrationData) redisTemplate.opsForValue().get(key);
+        RegistrationData data = redisAuthService.getRegistrationData(email);
 
         if (data == null)
             throw new RegistrationExpiredOrNotFoundException("Registration not found. Please start over");
 
-        String newCode = mailCodeService.generateCode(email);
-        data.setVerificationCode(mailCodeService.generateCode(newCode));
+        String newCode = mailCodeService.generateCode();
+
+        data.setVerificationCode(newCode);
         data.setAttempts(0);
-        redisTemplate.opsForValue().set(key, data, TTL_MINUTES, TimeUnit.MINUTES);
+        redisAuthService.addInitiateRegistrationData(email, data);
+
         mailSenderService.send(email, newCode);
         log.info("New code sent to: {}", email);
     }
