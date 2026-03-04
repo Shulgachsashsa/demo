@@ -29,7 +29,7 @@ public class AuthorizationService {
 
         var jwt = jwtService.generateToken(user);
 
-        log.info("Logout user with username: {}", request.getUsername());
+        log.info("Login user with username: {}", request.getUsername());
         return new JwtAuthenticationResponse(jwt);
     }
 

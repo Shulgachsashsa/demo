@@ -7,6 +7,7 @@ import org.example.demo.dto.request.VerifySignupRequest;
 import org.example.demo.dto.response.JwtAuthenticationResponse;
 import org.example.demo.dto.response.SignupResponse;
 import org.example.demo.entity.User;
+import org.example.demo.entity.enums.Provider;
 import org.example.demo.entity.enums.Role;
 import org.example.demo.exceptions.*;
 import org.example.demo.modelsRedis.RegistrationData;
@@ -88,6 +89,7 @@ public class RegistrationService {
                 .role(Role.ROLE_USER)
                 .enabled(true)
                 .email(data.getEmail())
+                .provider(Provider.EMAIL)
                 .build();
 
         userService.create(user);
