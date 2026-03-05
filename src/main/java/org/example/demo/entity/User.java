@@ -47,6 +47,9 @@ public class User implements UserDetails {
     @Column(name = "provider", nullable = false)
     private Provider provider;
 
+    @OneToOne(mappedBy = "user")
+    private Driver driver;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

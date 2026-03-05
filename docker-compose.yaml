@@ -18,3 +18,21 @@ services:
     depends_on:
       - redis
     restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    container_name: myapp_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      MINIO_DEFAULT_BUCKETS: carsbucket
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+volumes:
+  minio_data:
