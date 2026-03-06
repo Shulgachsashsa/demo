@@ -41,7 +41,6 @@ public class OAuth2GoogleService extends DefaultOAuth2UserService {
                     .username(username)
                     .email(attributes.get("email").toString())
                     .role(Role.ROLE_USER)
-                    .enabled(true)
                     .googleId(attributes.get("sub").toString())
                     .provider(Provider.GOOGLE)
                     .build();

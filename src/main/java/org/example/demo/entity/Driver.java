@@ -30,4 +30,11 @@ public class Driver {
 
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
     private List<Minio> minio = new ArrayList<>();
+
+    @OneToOne(mappedBy = "driver")
+    private RatingOfDriver ratingOfDriver;
+
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
+    private List<Trip> trip = new ArrayList<>();
+
 }

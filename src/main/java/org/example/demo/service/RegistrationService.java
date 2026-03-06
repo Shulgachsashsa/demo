@@ -87,7 +87,6 @@ public class RegistrationService {
                 .username(data.getUsername())
                 .password(data.getPassword())
                 .role(Role.ROLE_USER)
-                .enabled(true)
                 .email(data.getEmail())
                 .provider(Provider.EMAIL)
                 .build();

@@ -37,9 +37,6 @@ public class User implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name="enabled", nullable = false)
-    private boolean enabled;
-
     @Column(unique = true)
     private String googleId;
 
@@ -49,6 +46,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user")
     private Driver driver;
+
+    @OneToOne(mappedBy = "user")
+    private RatingOfPassenger ratingOfPassenger;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
