@@ -9,7 +9,6 @@ import org.example.demo.dto.request.*;
 import org.example.demo.dto.response.JwtAuthenticationResponse;
 import org.example.demo.dto.response.SignupResponse;
 import org.example.demo.service.AuthorizationService;
-import org.example.demo.service.MinioService;
 import org.example.demo.service.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ public class AuthController {
 
     private final AuthorizationService authorizationService;
     private final RegistrationService registrationService;
-    private final MinioService minioService;
 
     @Operation(summary = "Initial registration")
     @PostMapping("/signup/initiate")

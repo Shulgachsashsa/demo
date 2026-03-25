@@ -25,6 +25,7 @@ public class MinioService {
     private String bucketName;
 
     public String uploadFile(MultipartFile multipartFile) throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                 .bucket(bucketName)
                 .object(generateUniqueFileName(multipartFile.getOriginalFilename()))
@@ -32,7 +33,9 @@ public class MinioService {
                 .contentType(multipartFile.getContentType())
                 .build();
 
-        return minioClient.putObject(putObjectArgs).toString();
+        minioClient.putObject(putObjectArgs);
+
+        return putObjectArgs.object();
     }
 
     public String generateUniqueFileName(String fileName) {

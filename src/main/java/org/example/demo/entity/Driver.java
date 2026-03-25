@@ -1,6 +1,8 @@
 package org.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +11,9 @@ import java.util.List;
 
 @Entity
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "driver")
 public class Driver {
 
@@ -23,6 +27,9 @@ public class Driver {
 
     @Column(name = "number_car", nullable = false, unique = true)
     private String numberCar;
+
+    @Column(name = "model_car", nullable = false)
+    private String modelCar;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

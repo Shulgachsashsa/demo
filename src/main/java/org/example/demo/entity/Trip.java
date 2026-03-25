@@ -1,7 +1,10 @@
 package org.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +12,9 @@ import java.util.List;
 
 @Data
 @Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "trip")
 public class Trip {
 
@@ -28,6 +34,12 @@ public class Trip {
 
     @Column(name = "location_of_coordinates")
     private String locationOfCoordinates;
+
+    @Column(name = "city_from")
+    private String cityFrom;
+
+    @Column(name = "city_to")
+    private String cityTo;
 
     @Column(name = "price")
     private Double price;
