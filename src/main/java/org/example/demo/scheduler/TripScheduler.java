@@ -19,7 +19,7 @@ public class TripScheduler {
     public void expiredOldTrips() {
         int updated = tripRepository.expiredOldTrips();
         if (updated > 0)
-            log.info("Expired {} trips", updated);
+          log.info("Expired {} trips", updated);
     }
 
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="2025-02-20-minio" author="Sasha (generated)">
+
+        <createTable tableName="minio">
+
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="name_picture" type="varchar(250)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="driver_id" type="bigint"/>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="minio"
+                baseColumnNames="driver_id"
+                constraintName="fk_driver_id"
+                referencedTableName="driver"
+                referencedColumnNames="id"
+                deleteCascade="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>

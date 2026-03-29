@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="2025-02-20-driver" author="Sasha (generated)">
+
+        <createTable tableName="driver">
+
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="number_phone" type="varchar(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            
+            <column name="number_car" type="varchar(20)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="model_car" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="user_id" type="bigint"/>
+            
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_driver_user"
+                baseTableName="driver"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+    </changeSet>
+
+</databaseChangeLog>

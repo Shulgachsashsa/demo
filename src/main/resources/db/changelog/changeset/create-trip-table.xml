@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="2025-02-20-trip" author="Sasha (generated)">
+
+        <createTable tableName="trip">
+
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+          
+            <column name="number_of_available_seats" type="integer"/>
+
+            <column name="date_of_departure" type="timestamp without time zone"/>
+
+            <column name="actuality" type="boolean"/>
+            
+            <column name="price" type="double"/>
+
+            <column name="location_of_coordinates" type="varchar(255)"/>
+
+            <column name="city_from" type="varchar(255)"/>
+
+            <column name="city_to" type="varchar(255)"/>
+
+            <column name="time_of_arrival" type="timestamp without time zone"/>
+
+            <column name="driver_id" type="bigint"/>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="trip"
+                baseColumnNames="driver_id"
+                constraintName="fk_driver_id"
+                referencedTableName="driver"
+                referencedColumnNames="id"
+                deleteCascade="true"/>
+
+    </changeSet>
+
+</databaseChangeLog>
