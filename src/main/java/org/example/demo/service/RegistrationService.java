@@ -30,6 +30,7 @@ public class RegistrationService {
     private final UserRepository userRepository;
     private final RedisAuthService redisAuthService;
     private final RatingOfPassengerService ratingOfPassengerService;
+    private final RefreshTokenService refreshTokenService;
 
     public SignupResponse signup(SignupRequest request) {
         log.info("Initiating registration for email: {}", request.getEmail());
@@ -99,7 +100,10 @@ public class RegistrationService {
         log.info("Created rating for passenger with email: {}", user.getEmail());
         redisAuthService.deleteRegistrationData(request.getEmail());
 
-        return new JwtAuthenticationResponse(jwtService.generateToken(user));
+        return JwtAuthenticationResponse.builder()
+                .accessToken(jwtService.generateToken(user))
+                .refreshToken(String.valueOf(refreshTokenService.createRefreshToken(user.getId()).getToken()))
+                .build();
     }
 
     public void resendCode(String email) {

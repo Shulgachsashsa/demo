@@ -8,7 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.demo.dto.request.*;
 import org.example.demo.dto.response.JwtAuthenticationResponse;
 import org.example.demo.dto.response.SignupResponse;
+import org.example.demo.entity.RefreshToken;
+import org.example.demo.exceptions.RefreshTokenIsNotDBException;
 import org.example.demo.service.AuthorizationService;
+import org.example.demo.service.JwtService;
+import org.example.demo.service.RefreshTokenService;
 import org.example.demo.service.RegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +28,8 @@ public class AuthController {
 
     private final AuthorizationService authorizationService;
     private final RegistrationService registrationService;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtService jwtService;
 
     @Operation(summary = "Initial registration")
     @PostMapping("/signup/initiate")
@@ -58,6 +64,22 @@ public class AuthController {
             @RequestBody @Valid SignInRequest request) {
         JwtAuthenticationResponse response = authorizationService.signIn(request);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<JwtAuthenticationResponse> refresh(
+            @RequestBody TokenRefreshRequest request) {
+
+        System.out.println(request.getRefreshToken());
+        return refreshTokenService.findByToken(request.getRefreshToken())
+                .map(refreshTokenService::verifyExpiration)
+                .map(RefreshToken::getUser)
+                .map(user -> {
+                    String accessToken = jwtService.generateToken(user);
+                    RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user.getId());
+                    return ResponseEntity.ok(new JwtAuthenticationResponse(accessToken, newRefreshToken.getToken()));
+                })
+                .orElseThrow(() -> new RefreshTokenIsNotDBException("Refresh token is not in database!"));
     }
 
 }

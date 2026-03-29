@@ -16,6 +16,7 @@ public class AuthorizationService {
     private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final RefreshTokenService refreshTokenService;
 
     public JwtAuthenticationResponse signIn(SignInRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
@@ -28,9 +29,15 @@ public class AuthorizationService {
                 .loadUserByUsername(request.getUsername());
 
         var jwt = jwtService.generateToken(user);
+        var refreshToken = refreshTokenService.createRefreshToken(
+                userService.getIdByUsername(request.getUsername()));
 
         log.info("Login user with username: {}", request.getUsername());
-        return new JwtAuthenticationResponse(jwt);
+
+        return JwtAuthenticationResponse.builder()
+                .accessToken(jwt)
+                .refreshToken(refreshToken.getToken())
+                .build();
     }
 
 }

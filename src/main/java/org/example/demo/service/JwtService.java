@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.example.demo.exceptions.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,11 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUserName(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        try {
+            return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+        } catch (RuntimeException e) {
+            throw new ExpiredJwtException("Expired JWT");
+        }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
@@ -80,4 +85,5 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(JWT_SIGN_IN_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
 }

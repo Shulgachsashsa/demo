@@ -13,5 +13,6 @@
         <include file="/db/changelog/changeset/create-rating-of-passenger-table.xml"/>
         <include file="/db/changelog/changeset/create-passengers-reviews-table.xml"/>
         <include file="/db/changelog/changeset/create-minio-table.xml"/>
+        <include file="/db/changelog/changeset/create-refresh-token-table.xml"/>
 
 </databaseChangeLog>

@@ -46,6 +46,14 @@ public class UserService {
         return Optional.ofNullable(getByUsername(username));
     }
 
+    public Long getIdByUsername(String username) {
+        return userRepository.getIdByUsername(username);
+    }
+
+    public Long getIdByEmail(String email) {
+        return userRepository.getIdByEmail(email);
+    }
+
     public User create(User user) {
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new UserWithUsernameAlreadyExistsException(user.getUsername());

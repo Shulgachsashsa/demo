@@ -28,6 +28,7 @@ spring:
     signing:
       key: ${SECRET_KEY}
       ttl: ${TTL_KEY}
+      refresh: ${REFRESH_TTL_KEY}
 
   mail:
     host: smtp.gmail.com

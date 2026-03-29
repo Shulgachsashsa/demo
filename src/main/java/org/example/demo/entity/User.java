@@ -50,6 +50,9 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user")
     private RatingOfPassenger ratingOfPassenger;
 
+    @OneToOne(mappedBy = "user")
+    private RefreshToken refreshToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();

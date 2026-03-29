@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findUserById(Long userId);
     User findByUsername(String username);
     boolean existsByUsername(String username);
     boolean existsByEmail(String email);
@@ -30,4 +32,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT role FROM User WHERE email = :email")
     Optional<Role> getRoleByEmail(@Param("email") String email);
+
+    @Query("SELECT id FROM User WHERE username = :username")
+    Long getIdByUsername(@Param("username") String username);
+
+    Long getIdByEmail(String email);
 }
