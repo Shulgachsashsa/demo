@@ -24,12 +24,14 @@ import java.util.Map;
 public class OAuth2GoogleService extends DefaultOAuth2UserService {
 
     private final UserService userService;
+    private final RatingOfPassengerService ratingOfPassengerService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) {
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         Map<String, Object> attributes = oAuth2User.getAttributes();
         log.info("Login user by google with email: {}", attributes.get("email"));
+
         if (userService.findByEmail(attributes.get("email").toString()).isEmpty()) {
             String username;
             if (userService.getByUsername(attributes.get("name").toString()) == null) {
@@ -37,6 +39,7 @@ public class OAuth2GoogleService extends DefaultOAuth2UserService {
             } else {
                 username = (attributes.get("name").toString() + userService.getLastId().toString());
             }
+
             User user = User.builder()
                     .username(username)
                     .email(attributes.get("email").toString())
@@ -44,8 +47,11 @@ public class OAuth2GoogleService extends DefaultOAuth2UserService {
                     .googleId(attributes.get("sub").toString())
                     .provider(Provider.GOOGLE)
                     .build();
+
             userService.save(user);
+            ratingOfPassengerService.createRatingForNewPassenger(user);
             log.info("User with email: {} saved from DB", attributes.get("email"));
+            log.info("Created rating for passenger with email: {}", attributes.get("email"));
         } else {
             if (userService.getProviderByEmail(attributes.get("email").toString())
                     .orElse(null) == Provider.EMAIL) {

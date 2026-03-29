@@ -1,10 +1,16 @@
 package org.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "rating_of_passenger")
 public class RatingOfPassenger {
 
@@ -21,7 +27,7 @@ public class RatingOfPassenger {
     @Column(name = "average_grade")
     private double averageGrade;
 
-    // --- Кол-во всех оценок --- 1-4 2-5 3-4 4-5 -> 4 //
+    // --- Кол-во всех оценок --- 1-4, 2-5, 3-4, 4-5 -> 4 //
     @Column(name = "total_grade_counter")
     private int totalGradeCounter;
 

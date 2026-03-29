@@ -1,20 +1,16 @@
 package org.example.demo.service;
 
 import io.minio.errors.*;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.demo.dto.request.StartDriverRequest;
 import org.example.demo.entity.Driver;
 import org.example.demo.entity.Minio;
-import org.example.demo.entity.RatingOfDriver;
 import org.example.demo.entity.User;
 import org.example.demo.exceptions.NoAuthenticationUserFoundException;
 import org.example.demo.exceptions.UserAlreadyIsDriverException;
 import org.example.demo.repository.DriverRepository;
 import org.example.demo.repository.MinioRepository;
-import org.example.demo.repository.RatingOfDriverRepository;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +28,7 @@ public class StartDriverService {
     private final MinioService minioService;
     private final UserService userService;
     private final MinioRepository minioRepository;
-    private final RatingOfDriverRepository ratingOfDriverRepository;
+    private final RatingOfDriverService ratingOfDriverService;
 
     public void createDriverAccount(StartDriverRequest request, List<MultipartFile> carPhotos) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         User user = userService.getCurrentUser().orElseThrow(() ->
@@ -49,7 +45,7 @@ public class StartDriverService {
                 build();
 
         driverRepository.save(driver);
-        createRatingForDriver(driver);
+        ratingOfDriverService.createRatingForDriver(driver);
 
         if (!carPhotos.isEmpty()) {
             for (MultipartFile multipartFile: carPhotos) {
@@ -62,18 +58,6 @@ public class StartDriverService {
                 minioRepository.save(minio);
             }
         }
-    }
-
-    public void createRatingForDriver(Driver driver) {
-        RatingOfDriver rating = RatingOfDriver.builder()
-                .totalCounterTrip(0)
-                .averageGrade(0)
-                .totalGradeCounter(0)
-                .totalGrades(0)
-                .driver(driver)
-                .build();
-
-        ratingOfDriverRepository.save(rating);
     }
 
     public void updateCar() {

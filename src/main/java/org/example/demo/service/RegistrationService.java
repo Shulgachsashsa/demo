@@ -29,6 +29,7 @@ public class RegistrationService {
     private final MailCodeService mailCodeService;
     private final UserRepository userRepository;
     private final RedisAuthService redisAuthService;
+    private final RatingOfPassengerService ratingOfPassengerService;
 
     public SignupResponse signup(SignupRequest request) {
         log.info("Initiating registration for email: {}", request.getEmail());
@@ -92,7 +93,10 @@ public class RegistrationService {
                 .build();
 
         userService.create(user);
+        ratingOfPassengerService.createRatingForNewPassenger(user);
+
         log.info("User created successfully: {}", user.getEmail());
+        log.info("Created rating for passenger with email: {}", user.getEmail());
         redisAuthService.deleteRegistrationData(request.getEmail());
 
         return new JwtAuthenticationResponse(jwtService.generateToken(user));
@@ -115,4 +119,5 @@ public class RegistrationService {
         mailSenderService.send(email, newCode);
         log.info("New code sent to: {}", email);
     }
+
 }
