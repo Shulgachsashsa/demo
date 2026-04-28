@@ -19,7 +19,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MinioService {
 
-    private final MinioClient minioClient;
+    private final MinioClient minioClient; 
 
     @Value("${minio.bucket-name}")
     private String bucketName;

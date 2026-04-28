@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="2025-02-20-drivers-reviews" author="Sasha (generated)">
+    <changeSet id="2026-02-20-drivers-reviews" author="Sasha (generated)">
 
         <createTable tableName="drivers_reviews">
 
@@ -24,7 +24,7 @@
                 constraintName="fk_trip_user_id"
                 referencedTableName="trip_user"
                 referencedColumnNames="id"
-                deleteCascade="true"/>
+                onDelete="CASCADE"/>
 
     </changeSet>
 

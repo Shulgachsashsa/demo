@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/start-driver")
+@RequestMapping("/api/v1/drivers")
 @RequiredArgsConstructor
 @Tag(name = "Start work as a driver")
 public class StartDriverController {
 
     private final StartDriverService startDriverService;
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/start", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> startDriver(
             @RequestPart("request") @Valid StartDriverRequest request,
             @RequestPart("carPhotos") @Valid List<MultipartFile> carPhotos) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {

@@ -14,5 +14,9 @@
         <include file="/db/changelog/changeset/create-passengers-reviews-table.xml"/>
         <include file="/db/changelog/changeset/create-minio-table.xml"/>
         <include file="/db/changelog/changeset/create-refresh-token-table.xml"/>
+        <include file="db/changelog/changeset/change-trip-user.xml"/>
+        <include file="db/changelog/changeset/add-places-trip-user.xml"/>
+        <include file="db/changelog/changeset/add-field-trip-drivers-reviews.xml"/>
+        <include file="db/changelog/changeset/add-field-trip-passengers-reviews.xml"/>
 
 </databaseChangeLog>

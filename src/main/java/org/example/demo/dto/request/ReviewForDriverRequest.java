@@ -1,4 +1,13 @@
 package org.example.demo.dto.request;
 
-public class ReviewForPersonRequest {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ReviewForDriverRequest {
+    private int averageForDriver;
+    private Long tripUserId;
 }

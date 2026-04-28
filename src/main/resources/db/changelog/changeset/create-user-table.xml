@@ -4,7 +4,8 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="2025-02-20-user" author="Sasha (generated)">
+    <changeSet id="2026-02-20-user" author="Sasha (generated)">
+        <validCheckSum>9:4cef1f52d419f4fc0563d8077ba6b09a</validCheckSum>
 
         <createTable tableName="users">
 
@@ -22,9 +23,7 @@
                 <constraints nullable="false" unique="true"/>
             </column>
 
-            <column name="role" type="varchar(50)">
-                <constraints unique="true"/>
-            </column>
+            <column name="role" type="varchar(50)"/>
             
             <column name="google_id" type="varchar(255)">
                 <constraints unique="true"/>

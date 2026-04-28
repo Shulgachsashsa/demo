@@ -51,6 +51,14 @@ public class Trip {
     @JoinColumn(name = "driver_id")
     private Driver driver;
 
-    @OneToMany(mappedBy = "trip")
+    @OneToOne(mappedBy = "trip")
+    private DriversReviews driversReviews;
+
+    @OneToOne(mappedBy = "trip")
+    private PassengersReviews passengersReviews;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
     private List<TripUser> tripUsers = new ArrayList<>();
+
 }

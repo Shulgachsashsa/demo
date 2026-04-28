@@ -35,12 +35,14 @@ public class Driver {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
     private List<Minio> minio = new ArrayList<>();
 
     @OneToOne(mappedBy = "driver")
     private RatingOfDriver ratingOfDriver;
 
+    @Builder.Default
     @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
     private List<Trip> trip = new ArrayList<>();
 

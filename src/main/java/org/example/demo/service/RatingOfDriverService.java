@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.demo.entity.Driver;
 import org.example.demo.entity.RatingOfDriver;
+import org.example.demo.entity.RatingOfPassenger;
 import org.example.demo.repository.RatingOfDriverRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ public class RatingOfDriverService {
     private final RatingOfDriverRepository ratingOfDriverRepository;
 
     public void createRatingForDriver(Driver driver) {
+
         RatingOfDriver rating = RatingOfDriver.builder()
                 .totalCounterTrip(0)
                 .averageGrade(0)
@@ -24,6 +26,18 @@ public class RatingOfDriverService {
                 .build();
 
         ratingOfDriverRepository.save(rating);
+    }
+
+    public void addRatingForDriverById(Long id, int grade) {
+        RatingOfDriver rating = ratingOfDriverRepository.getRatingOfDriverByDriverId(id);
+        int totalGradeCounter = rating.getTotalGradeCounter() + 1;
+        int totalGrades = rating.getTotalGrades() + grade;
+        double averageGrade = (double) totalGrades / totalGradeCounter;
+        ratingOfDriverRepository.updateRatingByDriverId(totalGradeCounter, totalGrades, averageGrade, id);
+    }
+
+    public void addOneFromTotalCounterTrip(Long id) {
+        ratingOfDriverRepository.incrementTotalCounterTrip(id);
     }
 
 }

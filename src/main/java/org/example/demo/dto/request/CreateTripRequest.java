@@ -12,19 +12,11 @@ import java.util.Date;
 @NoArgsConstructor
 @Schema(description = "Create trip")
 public class CreateTripRequest {
-
     private String locationOfCoordinates;
-
     private Date date_of_departure;
-
     private Date timeOfArrival;
-
     private int numberOfAvailableSeats;
-
     private double price;
-
     private String cityFrom;
-
     private String cityTo;
-
 }

@@ -1,5 +1,6 @@
 package org.example.demo.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.demo.entity.RatingOfPassenger;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class RatingOfPassengerService {
 
     private final RatingOfPassengerRepository ratingOfPassengerRepository;
@@ -25,6 +27,18 @@ public class RatingOfPassengerService {
                 .build();
 
         ratingOfPassengerRepository.save(rating);
+    }
+
+    public void addRatingForPassengerById(Long id, int grade) {
+        RatingOfPassenger rating = ratingOfPassengerRepository.getRatingOfPassengersByUserId(id);
+        int totalGradeCounter = rating.getTotalGradeCounter() + 1;
+        int totalGrades = rating.getTotalGrades() + grade;
+        double averageGrade = (double) totalGrades / totalGradeCounter;
+        ratingOfPassengerRepository.updateRatingById(totalGradeCounter, totalGrades, averageGrade, id);
+    }
+
+    public void addOneFromTotalCounterTrip(Long id) {
+        ratingOfPassengerRepository.incrementTotalCounterTrip(id);
     }
 
 }

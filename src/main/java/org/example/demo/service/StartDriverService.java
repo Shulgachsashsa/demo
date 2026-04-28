@@ -1,6 +1,7 @@
 package org.example.demo.service;
 
 import io.minio.errors.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.demo.dto.request.StartDriverRequest;
@@ -30,6 +31,7 @@ public class StartDriverService {
     private final MinioRepository minioRepository;
     private final RatingOfDriverService ratingOfDriverService;
 
+    @Transactional
     public void createDriverAccount(StartDriverRequest request, List<MultipartFile> carPhotos) throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
         User user = userService.getCurrentUser().orElseThrow(() ->
                 new NoAuthenticationUserFoundException("No authentication user found"));
@@ -44,8 +46,12 @@ public class StartDriverService {
                 user(user).
                 build();
 
-        driverRepository.save(driver);
-        ratingOfDriverService.createRatingForDriver(driver);
+        try {
+            driverRepository.save(driver);
+            ratingOfDriverService.createRatingForDriver(driver);
+        } catch (RuntimeException e) {
+            throw new IOException(e.getMessage());
+        }
 
         if (!carPhotos.isEmpty()) {
             for (MultipartFile multipartFile: carPhotos) {
@@ -60,6 +66,7 @@ public class StartDriverService {
         }
     }
 
+    @Transactional
     public void updateCar() {
 
     }
